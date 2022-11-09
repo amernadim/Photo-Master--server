@@ -86,7 +86,7 @@ async function run() {
     res.send(result)
   })
 
-  //get review 
+  //get all review 
   app.get('/allreviews' , async(req,res) => {
     const query = {};
     const cursor = reviewCollection.find(query);
@@ -102,12 +102,19 @@ async function run() {
     res.send(reviews)
   })
 
+  // get one by id
+  app.get('/review/:id', async(req,res)=> {
+    const id = req.params.id;
+    const query = {_id : ObjectId(id)};
+    const user = await reviewCollection.findOne(query);
+    res.send(user)
+  })
+
   // get reviews by email
   app.get('/reviewes/:email' , verifyJWT,  async(req,res) => {
     const email = req.params.email; 
     
     const decoded = req.decoded ;
-    console.log('inside user api',decoded);
     if(decoded.email !== email) {
       return res.status(403).send({message : 'Forbidded access'})
     }
@@ -124,6 +131,17 @@ async function run() {
       const result = await reviewCollection.deleteOne(query);
       res.send(result)
     })
+
+   // update one
+  app.put('/reviews/:id' , async(req,res)=> {
+    const id = req.params.id ;
+    const user = req.body;  
+    const query = {_id : ObjectId(id)};
+    const result = await reviewCollection.updateOne(query,{
+      $set:{"review.reviewText" : user.reviewText}
+    });
+    res.send(result)
+  })
 
   //get review 
   // app.get('/allreviews' , async(req,res) => {
