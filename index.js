@@ -54,7 +54,7 @@ async function run() {
   app.post('/allreviews', async(req,res) => {
     const review = req.body;
     const myDate = new Date();
-    const result = await reviewCollection.insertOne(review ,{myDate});
+    const result = await reviewCollection.insertOne({review, myDate});
     res.send(result)
   })
 
@@ -66,6 +66,47 @@ async function run() {
     res.send(reviews)
   })
 
+  // get reviews by service id
+  app.get('/reviews/:serviceId' , async(req,res) => {
+    const id = req.params.serviceId;    
+    const cursor = reviewCollection.find({"review.serviceId" : id});
+    const reviews = await cursor.toArray();
+    res.send(reviews)
+  })
+
+  //get review 
+  // app.get('/allreviews' , async(req,res) => {
+  //   const query = {}; 
+  //   // const cursor = reviewCollection.find(query);
+  //   const result = reviewCollection.sort({mydate: -1}, function(err, cursor){
+  //     if(err) {
+  //       return res.status(403).send({message : 'Forbidden access'})
+  //     }
+  //     result = cursor;
+  //   });
+
+  //   res.send(result)
+   
+   
+  // })
+
+  // get review by sevice id
+
+  // app.get('/allreviewssss', async(req,res)=> {
+  //   // const id = req.params.id;
+  //   // const query = {serviceId : ObjectId(id)};
+  //   let query = {}
+  //   if(req.query.serviceId) {
+  //     query = {
+  //       review : req.query.serviceId
+  //     }
+  //   }
+  //   const user = await reviewCollection.find.sort({myDate : -1 (query) } )
+  //   res.send(user)
+  // })
+
+
+ 
   }
   finally{
 
